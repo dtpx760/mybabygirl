@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Our Pacific Coast Trip · Monterey & the Bay</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,900&family=Outfit:wght@300;400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --abyss:#0E2A33;
+    --abyss-2:#123640;
+    --tide:#1C4B54;
+    --sand:#F4E9D2;
+    --sand-2:#EADCC0;
+    --coral:#E86A4C;
+    --gold:#F2A63D;
+    --foam:#84B9A8;
+    --ink:#213330;
+    --ink-soft:#5C6B66;
+    --fog:#DCE7E5;
+    --paper-grain:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.045'/%3E%3C/svg%3E");
+  }
+
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--abyss);
+    color:var(--fog);
+    font-family:"Outfit",system-ui,sans-serif;
+    font-weight:300;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+
+  /* ---------- editable fields ---------- */
+  [contenteditable]{
+    outline:none;
+    cursor:text;
+    border-radius:4px;
+    transition:background .18s ease, box-shadow .18s ease;
+  }
+  [contenteditable]:hover{ background:rgba(232,106,76,.08); }
+  [contenteditable]:focus{
+    background:rgba(232,106,76,.10);
+    box-shadow:0 0 0 2px rgba(232,106,76,.45);
+  }
+  .on-sand [contenteditable]:hover{ background:rgba(33,51,48,.06); }
+  .on-sand [contenteditable]:focus{
+    background:rgba(33,51,48,.05);
+    box-shadow:0 0 0 2px rgba(232,106,76,.55);
+  }
+  [contenteditable].is-empty:before{
+    content:attr(data-ph);
+    color:currentColor;
+    opacity:.42;
+    font-style:italic;
+    pointer-events:none;
+  }
+
+  /* ---------- hero ---------- */
+  .hero{
+    position:relative;
+    padding:clamp(3rem,7vw,6rem) 1.5rem clamp(3.5rem,8vw,6.5rem);
+    text-align:center;
+    overflow:hidden;
+    background:linear-gradient(180deg,#0B232B 0%, #0E2A33 45%, #14414A 100%);
+  }
+  .sun-wrap{
+    position:absolute;
+    top:clamp(1rem,4vw,3rem); left:50%;
+    transform:translateX(-50%);
+    width:min(560px,86vw);
+    z-index:0;
+    opacity:.92;
+    animation:rise 1.4s cubic-bezier(.2,.7,.2,1) both;
+  }
+  @keyframes rise{
+    from{opacity:0; transform:translateX(-50%) translateY(34px);}
+    to{opacity:.92; transform:translateX(-50%) translateY(0);}
+  }
+  .hero-inner{ position:relative; z-index:2; }
+  .eyebrow{
+    font-family:"Space Mono",monospace;
+    font-size:.72rem;
+    letter-spacing:.34em;
+    text-transform:uppercase;
+    color:var(--gold);
+    margin:0 0 1.1rem;
+  }
+  .hero h1{
+    font-family:"Fraunces",serif;
+    font-weight:900;
+    font-size:clamp(2.6rem,8vw,5.4rem);
+    line-height:.96;
+    letter-spacing:-.015em;
+    margin:0 auto;
+    max-width:14ch;
+    color:var(--sand);
+    text-shadow:0 2px 0 rgba(0,0,0,.18);
+  }
+  .hero-sub{
+    font-size:clamp(1rem,2.4vw,1.3rem);
+    color:var(--foam);
+    margin:1.3rem auto 0;
+    max-width:34ch;
+    font-weight:300;
+  }
+  .hero-stamp{
+    display:inline-flex; align-items:center; gap:.5rem;
+    margin-top:1.8rem;
+    font-family:"Space Mono",monospace;
+    font-size:.7rem; letter-spacing:.2em; text-transform:uppercase;
+    color:var(--fog);
+    border:1.5px dashed rgba(220,231,229,.4);
+    padding:.5rem .9rem; border-radius:30px;
+  }
+  .hero-stamp b{ color:var(--coral); }
+
+  /* horizon divider */
+  .horizon{ display:block; width:100%; height:auto; margin-top:-1px; }
+
+  /* ---------- layout shell ---------- */
+  main{ max-width:1080px; margin:0 auto; padding:0 1.25rem 5rem; }
+  .section-head{
+    display:flex; align-items:baseline; gap:.9rem;
+    margin:3.4rem 0 1.4rem; flex-wrap:wrap;
+  }
+  .section-head .num{
+    font-family:"Space Mono",monospace;
+    color:var(--gold); font-size:.85rem; letter-spacing:.1em;
+  }
+  .section-head h2{
+    font-family:"Fraunces",serif;
+    font-weight:600; font-size:clamp(1.6rem,4vw,2.4rem);
+    margin:0; color:var(--sand); letter-spacing:-.01em;
+  }
+  .section-head p{
+    margin:0; color:var(--ink-soft); color:#9fb3b0;
+    font-size:.92rem;
+  }
+
+  /* ---------- glance stamps ---------- */
+  .glance{
+    display:grid; gap:1rem;
+    grid-template-columns:repeat(auto-fit,minmax(190px,1fr));
+  }
+  .stamp{
+    position:relative;
+    background:var(--sand); background-image:var(--paper-grain);
+    color:var(--ink);
+    border-radius:6px;
+    padding:1.1rem 1.2rem 1.2rem;
+    box-shadow:0 10px 24px -16px rgba(0,0,0,.6);
+    border:1px solid var(--sand-2);
+  }
+  .stamp .k{
+    font-family:"Space Mono",monospace;
+    font-size:.66rem; letter-spacing:.18em; text-transform:uppercase;
+    color:var(--coral); margin-bottom:.4rem;
+  }
+  .stamp .v{
+    font-family:"Fraunces",serif; font-weight:600;
+    font-size:1.18rem; line-height:1.25; color:var(--ink);
+  }
+
+  /* ---------- itinerary postcards ---------- */
+  .days{ display:flex; flex-direction:column; gap:1.5rem; }
+  .card{
+    position:relative;
+    background:var(--sand); background-image:var(--paper-grain);
+    color:var(--ink);
+    border-radius:8px;
+    border:1px solid var(--sand-2);
+    box-shadow:0 18px 40px -24px rgba(0,0,0,.7);
+    overflow:hidden;
+    transition:transform .25s ease, box-shadow .25s ease;
+  }
+  .card:hover{ transform:translateY(-3px); box-shadow:0 26px 48px -26px rgba(0,0,0,.75); }
+  .card-top{
+    display:flex; align-items:center; gap:1rem;
+    padding:1.1rem 1.3rem;
+    border-bottom:1.5px dashed var(--sand-2);
+    background:linear-gradient(90deg, rgba(232,106,76,.10), rgba(242,166,61,.06));
+  }
+  .postmark{
+    flex:0 0 auto;
+    width:62px; height:62px; border-radius:50%;
+    border:2.5px solid var(--coral);
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    color:var(--coral); text-align:center; line-height:1;
+    font-family:"Space Mono",monospace;
+    transform:rotate(-7deg);
+  }
+  .postmark small{ font-size:.5rem; letter-spacing:.12em; }
+  .postmark b{ font-size:1.5rem; font-weight:700; }
+  .card-top .titles{ flex:1 1 auto; min-width:0; }
+  .card-top .place{
+    font-family:"Fraunces",serif; font-weight:600;
+    font-size:1.35rem; color:var(--ink); line-height:1.1;
+  }
+  .card-top .date{
+    font-family:"Space Mono",monospace; font-size:.72rem;
+    letter-spacing:.06em; color:var(--ink-soft); margin-top:.25rem;
+  }
+  .card-body{ padding:.4rem 1.3rem 1.2rem; }
+  .slot{
+    display:grid; grid-template-columns:96px 1fr; gap:.6rem 1rem;
+    padding:.85rem 0; border-bottom:1px solid rgba(33,51,48,.08);
+    align-items:start;
+  }
+  .slot:last-of-type{ border-bottom:none; }
+  .slot .when{
+    font-family:"Space Mono",monospace; font-size:.66rem;
+    letter-spacing:.14em; text-transform:uppercase;
+    color:var(--coral); padding-top:.2rem;
+  }
+  .slot .what{ color:var(--ink); font-size:1rem; line-height:1.5; font-weight:300; min-height:1.4em; }
+  .card-foot{
+    display:flex; align-items:center; gap:.6rem;
+    padding:.7rem 1.3rem 1rem;
+    font-family:"Space Mono",monospace; font-size:.7rem;
+    color:var(--ink-soft);
+  }
+  .card-foot .note{ flex:1 1 auto; color:var(--ink); font-weight:300; font-family:"Outfit",sans-serif; min-height:1.3em; }
+
+  .ghost-btn{
+    font-family:"Space Mono",monospace; font-size:.66rem;
+    letter-spacing:.1em; text-transform:uppercase;
+    background:transparent; border:1.5px solid rgba(33,51,48,.25);
+    color:var(--ink-soft); border-radius:30px; padding:.3rem .7rem;
+    cursor:pointer; transition:all .15s ease; white-space:nowrap;
+  }
+  .ghost-btn:hover{ border-color:var(--coral); color:var(--coral); }
+
+  .add-day{
+    align-self:flex-start; margin-top:.25rem;
+    font-family:"Space Mono",monospace; font-size:.74rem;
+    letter-spacing:.14em; text-transform:uppercase;
+    background:transparent; border:1.5px dashed var(--foam);
+    color:var(--foam); border-radius:8px; padding:.85rem 1.3rem;
+    cursor:pointer; transition:all .15s ease; width:100%;
+  }
+  .add-day:hover{ background:rgba(132,185,168,.10); border-style:solid; }
+
+  /* ---------- wishlist ---------- */
+  .wish-grid{
+    display:grid; gap:1.1rem;
+    grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+  }
+  .wish-col{
+    background:var(--tide);
+    border:1px solid rgba(132,185,168,.18);
+    border-radius:8px; padding:1.1rem 1.2rem 1.3rem;
+  }
+  .wish-col h3{
+    font-family:"Fraunces",serif; font-weight:600; font-size:1.15rem;
+    margin:0 0 .2rem; color:var(--sand);
+  }
+  .wish-col .cap{
+    font-family:"Space Mono",monospace; font-size:.62rem;
+    letter-spacing:.16em; text-transform:uppercase; color:var(--gold);
+    margin-bottom:.8rem;
+  }
+  .wish{
+    display:flex; align-items:flex-start; gap:.7rem;
+    padding:.4rem 0; color:var(--fog); font-size:.95rem;
+  }
+  .box{
+    flex:0 0 auto; margin-top:.15rem;
+    width:18px; height:18px; border-radius:5px;
+    border:2px solid var(--foam); cursor:pointer;
+    display:flex; align-items:center; justify-content:center;
+    transition:all .15s ease; user-select:none;
+  }
+  .box:hover{ border-color:var(--coral); }
+  .box[data-checked="1"]{ background:var(--coral); border-color:var(--coral); }
+  .box[data-checked="1"]:after{ content:"✓"; color:#fff; font-size:.8rem; line-height:1; }
+  .wish .txt{ flex:1 1 auto; line-height:1.4; min-height:1.3em; }
+  .wish[data-done="1"] .txt{ text-decoration:line-through; opacity:.5; }
+  .add-wish{
+    margin-top:.6rem; background:none; border:none;
+    font-family:"Space Mono",monospace; font-size:.66rem;
+    letter-spacing:.1em; text-transform:uppercase; color:var(--foam);
+    cursor:pointer; padding:.2rem 0;
+  }
+  .add-wish:hover{ color:var(--coral); }
+
+  /* ---------- field notes ---------- */
+  .notes-card{
+    background:var(--sand); background-image:var(--paper-grain);
+    color:var(--ink); border-radius:8px; border:1px solid var(--sand-2);
+    padding:1.4rem 1.5rem 1.6rem;
+    box-shadow:0 18px 40px -28px rgba(0,0,0,.7);
+    background-size:auto, 100% 2.1rem;
+    background-image:var(--paper-grain),
+      repeating-linear-gradient(transparent, transparent 2rem, rgba(33,51,48,.10) 2rem, rgba(33,51,48,.10) 2.05rem);
+  }
+  .notes-card .lbl{
+    font-family:"Space Mono",monospace; font-size:.66rem;
+    letter-spacing:.16em; text-transform:uppercase; color:var(--coral);
+    margin-bottom:.7rem;
+  }
+  .notes-area{
+    min-height:8rem; line-height:2.05rem; font-size:1.02rem;
+    color:var(--ink); font-weight:300;
+  }
+
+  /* ---------- toolbar ---------- */
+  .toolbar{
+    position:fixed; bottom:1rem; left:50%; transform:translateX(-50%);
+    display:flex; align-items:center; gap:.5rem;
+    background:rgba(11,35,43,.92); backdrop-filter:blur(8px);
+    border:1px solid rgba(132,185,168,.25);
+    border-radius:40px; padding:.45rem .55rem;
+    box-shadow:0 14px 34px -14px rgba(0,0,0,.8);
+    z-index:50;
+  }
+  .toolbar button{
+    font-family:"Space Mono",monospace; font-size:.68rem;
+    letter-spacing:.08em; text-transform:uppercase;
+    border:none; border-radius:30px; padding:.5rem .85rem;
+    cursor:pointer; transition:all .15s ease; color:var(--fog);
+    background:transparent;
+  }
+  .toolbar button:hover{ background:rgba(132,185,168,.16); }
+  .toolbar .primary{ background:var(--coral); color:#fff; }
+  .toolbar .primary:hover{ background:#f07a5d; }
+  .toolbar .status{
+    font-family:"Space Mono",monospace; font-size:.62rem;
+    color:var(--foam); padding:0 .5rem; min-width:74px; text-align:center;
+  }
+
+  footer{
+    text-align:center; padding:2rem 1rem 6rem;
+    font-family:"Space Mono",monospace; font-size:.66rem;
+    letter-spacing:.12em; color:#5e7672; text-transform:uppercase;
+  }
+  footer span{ color:var(--coral); }
+
+  :focus-visible{ outline:2px solid var(--gold); outline-offset:2px; }
+
+  @media (max-width:560px){
+    .slot{ grid-template-columns:1fr; gap:.2rem; }
+    .slot .when{ padding-top:0; }
+    .card-foot{ flex-wrap:wrap; }
+    .toolbar{ width:calc(100% - 1.5rem); justify-content:space-between; }
+    .toolbar .status{ display:none; }
+  }
+
+  @media (prefers-reduced-motion:reduce){
+    .sun-wrap{ animation:none; }
+    .card{ transition:none; }
+    html{ scroll-behavior:auto; }
+  }
+
+  @media print{
+    body{ background:#fff; color:#000; }
+    .toolbar,.add-day,.ghost-btn,.add-wish{ display:none !important; }
+    .hero{ background:#fff; color:#000; padding:1rem; }
+    .hero h1,.section-head h2,.stamp .v,.card-top .place{ color:#000; }
+    .card,.stamp,.notes-card{ box-shadow:none; border:1px solid #ccc; }
+    .sun-wrap{ opacity:.5; }
+  }
+</style>
+</head>
+<body>
+
+  <!-- ============ HERO ============ -->
+  <header class="hero">
+    <svg class="sun-wrap" viewBox="0 0 560 320" fill="none" aria-hidden="true">
+      <defs>
+        <linearGradient id="sun" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#F2A63D"/>
+          <stop offset="1" stop-color="#E86A4C"/>
+        </linearGradient>
+      </defs>
+      <circle cx="280" cy="180" r="150" stroke="#F2A63D" stroke-width="2" opacity="0.25"/>
+      <circle cx="280" cy="180" r="118" stroke="#E86A4C" stroke-width="2" opacity="0.35"/>
+      <circle cx="280" cy="180" r="92" fill="url(#sun)"/>
+      <!-- banding across the sun for that screen-print look -->
+      <rect x="180" y="150" width="200" height="6" fill="#0E2A33" opacity="0.55"/>
+      <rect x="170" y="168" width="220" height="6" fill="#0E2A33" opacity="0.45"/>
+      <rect x="178" y="186" width="204" height="6" fill="#0E2A33" opacity="0.35"/>
+      <!-- waves / reflection -->
+      <path d="M0 250 Q70 238 140 250 T280 250 T420 250 T560 250" stroke="#84B9A8" stroke-width="3" opacity="0.5"/>
+      <path d="M0 274 Q70 262 140 274 T280 274 T420 274 T560 274" stroke="#84B9A8" stroke-width="3" opacity="0.35"/>
+      <path d="M0 298 Q70 286 140 298 T280 298 T420 298 T560 298" stroke="#84B9A8" stroke-width="3" opacity="0.22"/>
+    </svg>
+
+    <div class="hero-inner">
+      <p class="eyebrow">A road trip for two</p>
+      <h1 contenteditable="true" data-key="title" data-ph="Name your trip…">Our Pacific Coast Trip</h1>
+      <p class="hero-sub" contenteditable="true" data-key="subtitle" data-ph="A line about the trip…">Monterey · Big Sur · the Bay — salt air, slow mornings &amp; the long way round</p>
+      <div class="hero-stamp">
+        <span>Departing</span>
+        <b contenteditable="true" data-key="depart" data-ph="set a date">Sat · ____</b>
+        <span>·</span>
+        <span>Returning</span>
+        <b contenteditable="true" data-key="return" data-ph="set a date">____</b>
+      </div>
+    </div>
+  </header>
+
+  <svg class="horizon" viewBox="0 0 1440 60" preserveAspectRatio="none" aria-hidden="true">
+    <path d="M0 30 Q120 10 240 30 T480 30 T720 30 T960 30 T1200 30 T1440 30 V60 H0 Z" fill="#0E2A33"/>
+  </svg>
+
+  <main>
+    <!-- ============ AT A GLANCE ============ -->
+    <div class="section-head">
+      <span class="num">01</span>
+      <h2>At a glance</h2>
+      <p>the quick facts — tap any line to edit</p>
+    </div>
+    <div class="glance on-sand">
+      <div class="stamp">
+        <div class="k">Travelers</div>
+        <div class="v" contenteditable="true" data-key="g-who" data-ph="who's going?">Just us two 💛</div>
+      </div>
+      <div class="stamp">
+        <div class="k">Home base</div>
+        <div class="v" contenteditable="true" data-key="g-base" data-ph="where you're staying">A little place in Monterey</div>
+      </div>
+      <div class="stamp">
+        <div class="k">Wheels</div>
+        <div class="v" contenteditable="true" data-key="g-car" data-ph="how you're getting around">Windows down, coast hwy</div>
+      </div>
+      <div class="stamp">
+        <div class="k">The vibe</div>
+        <div class="v" contenteditable="true" data-key="g-vibe" data-ph="set the mood">No rush. Good coffee.</div>
+      </div>
+    </div>
+
+    <!-- ============ ITINERARY ============ -->
+    <div class="section-head">
+      <span class="num">02</span>
+      <h2>The plan, day by day</h2>
+      <p>postcards you can fill in &amp; reorder by editing</p>
+    </div>
+    <div class="days on-sand" id="days"><!-- day cards injected here --></div>
+    <button class="add-day" id="addDay">+ add a day</button>
+
+    <!-- ============ WISHLIST ============ -->
+    <div class="section-head">
+      <span class="num">03</span>
+      <h2>Things we want to hit</h2>
+      <p>tap the box when you've done it</p>
+    </div>
+    <div class="wish-grid" id="wishGrid"><!-- wish columns injected --></div>
+
+    <!-- ============ FIELD NOTES ============ -->
+    <div class="section-head">
+      <span class="num">04</span>
+      <h2>Field notes</h2>
+      <p>anything you don't want to forget</p>
+    </div>
+    <div class="notes-card on-sand">
+      <div class="lbl">✶ scribbles, packing, reminders</div>
+      <div class="notes-area" contenteditable="true" data-key="notes" data-ph="Pack a jacket — it gets foggy. Reservation at… Don't forget the otters.">Pack layers (the coast is foggy even in summer) · book the aquarium ahead · find a sunset spot · bring the good camera</div>
+    </div>
+  </main>
+
+  <!-- ============ TOOLBAR ============ -->
+  <div class="toolbar">
+    <span class="status" id="status">saved</span>
+    <button id="saveBtn" class="primary">Save</button>
+    <button id="printBtn">Print</button>
+    <button id="resetBtn">Reset</button>
+  </div>
+
+  <footer>Made for the trip — keep it, host it, fill it in · <span>♡</span></footer>
+
+<script>
+(function(){
+  "use strict";
+  const KEY = "pacific-coast-trip-v1";
+  const statusEl = document.getElementById("status");
+
+  /* ---- safe storage (works on github.io / your browser; degrades quietly in sandboxes) ---- */
+  const store = {
+    get(){ try{ return localStorage.getItem(KEY); }catch(e){ return mem; } },
+    set(v){ try{ localStorage.setItem(KEY,v); }catch(e){ mem=v; } }
+  };
+  let mem = null;
+
+  /* ---------- seed data ---------- */
+  const seedDays = [
+    {n:"01", place:"Monterey", date:"Day one", note:"end the day watching the light go orange over the water",
+     slots:[
+       ["Morning","Coffee + a slow wander down Cannery Row"],
+       ["Midday","Monterey Bay Aquarium — kelp forest, jellies &amp; the sea otters"],
+       ["Evening","Sunset on the wharf, dinner somewhere with a view"]
+     ]},
+    {n:"02", place:"17-Mile Drive &amp; Carmel", date:"Day two", note:"split a pastry in Carmel and pretend we live here",
+     slots:[
+       ["Morning","The 17-Mile Drive — Pebble Beach &amp; the Lone Cypress"],
+       ["Midday","Wander Carmel-by-the-Sea, storybook cottages &amp; the beach"],
+       ["Evening","Wine + something cozy back in town"]
+     ]},
+    {n:"03", place:"Big Sur", date:"Day three", note:"this is the drive everyone tells you about — take it slow",
+     slots:[
+       ["Morning","Bixby Bridge photo stop, windows down the whole way"],
+       ["Midday","McWay Falls overlook, lunch at Nepenthe over the ocean"],
+       ["Evening","Find a pull-off and just watch the Pacific for a while"]
+     ]},
+    {n:"04", place:"Up to the Bay", date:"Day four", note:"the city day — leave room to get lost on purpose",
+     slots:[
+       ["Morning","Drive north, first glimpse of the Golden Gate"],
+       ["Midday","Ferry Building snacks, the Painted Ladies, a hill or two"],
+       ["Evening","Dinner in the city, lights coming on across the bay"]
+     ]}
+  ];
+
+  const seedWish = [
+    {h:"Eat &amp; drink", cap:"the good stuff", items:["Clam chowder on the wharf","A real Carmel bakery morning","Ferry Building treats","That one taco spot we read about"]},
+    {h:"Sea &amp; sand", cap:"toes in the water", items:["Spot the sea otters","Tide pools at low tide","Walk a beach with no plan","Watch for whales"]},
+    {h:"Views &amp; drives", cap:"windows down", items:["Bixby Bridge","17-Mile Drive","McWay Falls","Golden Gate at golden hour"]},
+    {h:"Just us", cap:"the soft stuff", items:["One sunset, no phones","Pick up a dumb fridge magnet","A slow breakfast somewhere new","Take the photo this time"]}
+  ];
+
+  /* ---------- build itinerary ---------- */
+  const daysEl = document.getElementById("days");
+
+  function dayCard(d){
+    const card = document.createElement("article");
+    card.className = "card";
+    card.innerHTML = `
+      <div class="card-top">
+        <div class="postmark"><small>DAY</small><b contenteditable="true" data-ph="00">${d.n}</b></div>
+        <div class="titles">
+          <div class="place" contenteditable="true" data-ph="Where to?">${d.place}</div>
+          <div class="date" contenteditable="true" data-ph="date / label">${d.date}</div>
+        </div>
+        <button class="ghost-btn js-remove" title="Remove this day">✕</button>
+      </div>
+      <div class="card-body">
+        ${d.slots.map(s=>`
+          <div class="slot">
+            <div class="when" contenteditable="true" data-ph="when">${s[0]}</div>
+            <div class="what" contenteditable="true" data-ph="what are we doing?">${s[1]}</div>
+          </div>`).join("")}
+      </div>
+      <div class="card-foot">
+        <span>✎ note —</span>
+        <div class="note" contenteditable="true" data-ph="a little reminder for this day…">${d.note}</div>
+      </div>`;
+    card.querySelector(".js-remove").addEventListener("click", ()=>{
+      if(confirm("Remove this day?")){ card.remove(); save(); }
+    });
+    return card;
+  }
+
+  function addDay(d){ daysEl.appendChild(dayCard(d)); }
+
+  document.getElementById("addDay").addEventListener("click", ()=>{
+    const num = String(daysEl.children.length + 1).padStart(2,"0");
+    addDay({n:num, place:"", date:"", note:"",
+      slots:[["Morning",""],["Midday",""],["Evening",""]]});
+    save();
+    daysEl.lastElementChild.scrollIntoView({behavior:"smooth", block:"center"});
+    refreshPlaceholders();
+  });
+
+  /* ---------- build wishlist ---------- */
+  const wishGrid = document.getElementById("wishGrid");
+
+  function wishRow(text, done){
+    const row = document.createElement("div");
+    row.className = "wish";
+    row.dataset.done = done ? "1" : "0";
+    row.innerHTML = `
+      <span class="box" data-checked="${done?"1":"0"}" role="checkbox" aria-checked="${done?"true":"false"}" tabindex="0"></span>
+      <span class="txt" contenteditable="true" data-ph="add a thing…">${text}</span>`;
+    const box = row.querySelector(".box");
+    const toggle = ()=>{
+      const on = box.dataset.checked === "1" ? "0" : "1";
+      box.dataset.checked = on; row.dataset.done = on;
+      box.setAttribute("aria-checked", on==="1"?"true":"false");
+      save();
+    };
+    box.addEventListener("click", toggle);
+    box.addEventListener("keydown", e=>{ if(e.key===" "||e.key==="Enter"){ e.preventDefault(); toggle(); }});
+    return row;
+  }
+
+  function wishCol(col){
+    const el = document.createElement("div");
+    el.className = "wish-col";
+    el.innerHTML = `
+      <h3 contenteditable="true" data-ph="Category">${col.h}</h3>
+      <div class="cap" contenteditable="true" data-ph="subtitle">${col.cap}</div>
+      <div class="rows"></div>
+      <button class="add-wish">+ add</button>`;
+    const rows = el.querySelector(".rows");
+    col.items.forEach(t=> rows.appendChild(wishRow(t,false)));
+    el.querySelector(".add-wish").addEventListener("click", ()=>{
+      const r = wishRow("",false); rows.appendChild(r);
+      r.querySelector(".txt").focus(); save(); refreshPlaceholders();
+    });
+    return el;
+  }
+
+  /* ---------- placeholders ---------- */
+  function refreshPlaceholders(scope){
+    (scope||document).querySelectorAll("[contenteditable][data-ph]").forEach(el=>{
+      el.classList.toggle("is-empty", el.textContent.trim()==="");
+    });
+  }
+
+  /* ---------- save / load ---------- */
+  let t;
+  function flagSaving(){ statusEl.textContent = "saving…"; statusEl.style.color="#F2A63D"; }
+  function flagSaved(){ statusEl.textContent = "saved ✓"; statusEl.style.color="#84B9A8"; }
+
+  function save(){
+    flagSaving();
+    clearTimeout(t);
+    t = setTimeout(()=>{
+      const payload = {
+        head:{},
+        days: daysEl.innerHTML,
+        wish: wishGrid.innerHTML
+      };
+      document.querySelectorAll("[data-key]").forEach(el=>{ payload.head[el.dataset.key]=el.innerHTML; });
+      store.set(JSON.stringify(payload));
+      flagSaved();
+    }, 350);
+  }
+
+  function load(){
+    let raw = store.get();
+    if(!raw){ return false; }
+    try{
+      const p = JSON.parse(raw);
+      if(p.days){ daysEl.innerHTML = p.days; }
+      if(p.wish){ wishGrid.innerHTML = p.wish; }
+      if(p.head){ document.querySelectorAll("[data-key]").forEach(el=>{
+        if(p.head[el.dataset.key]!==undefined) el.innerHTML = p.head[el.dataset.key];
+      }); }
+      rebind();
+      return true;
+    }catch(e){ return false; }
+  }
+
+  /* re-attach listeners after innerHTML restore */
+  function rebind(){
+    daysEl.querySelectorAll(".card").forEach(card=>{
+      const rm = card.querySelector(".js-remove");
+      if(rm) rm.addEventListener("click", ()=>{ if(confirm("Remove this day?")){ card.remove(); save(); }});
+    });
+    wishGrid.querySelectorAll(".wish").forEach(row=>{
+      const box = row.querySelector(".box");
+      const toggle = ()=>{
+        const on = box.dataset.checked==="1"?"0":"1";
+        box.dataset.checked=on; row.dataset.done=on;
+        box.setAttribute("aria-checked", on==="1"?"true":"false"); save();
+      };
+      box.addEventListener("click", toggle);
+      box.addEventListener("keydown", e=>{ if(e.key===" "||e.key==="Enter"){ e.preventDefault(); toggle(); }});
+    });
+    wishGrid.querySelectorAll(".wish-col").forEach(col=>{
+      const rows = col.querySelector(".rows");
+      const add = col.querySelector(".add-wish");
+      if(add) add.addEventListener("click", ()=>{
+        const r = wishRow("",false); rows.appendChild(r);
+        r.querySelector(".txt").focus(); save(); refreshPlaceholders();
+      });
+    });
+  }
+
+  /* ---------- init ---------- */
+  seedDays.forEach(addDay);
+  seedWish.forEach(c=> wishGrid.appendChild(wishCol(c)));
+
+  const restored = load();
+  refreshPlaceholders();
+  flagSaved();
+
+  /* autosave on any edit */
+  document.addEventListener("input", e=>{
+    if(e.target.isContentEditable){
+      e.target.classList.toggle("is-empty", e.target.textContent.trim()==="");
+      save();
+    }
+  });
+
+  /* toolbar */
+  document.getElementById("saveBtn").addEventListener("click", ()=>{ save(); });
+  document.getElementById("printBtn").addEventListener("click", ()=> window.print());
+  document.getElementById("resetBtn").addEventListener("click", ()=>{
+    if(confirm("Reset everything back to the starting plan? Your changes will be cleared.")){
+      try{ localStorage.removeItem(KEY); }catch(e){ mem=null; }
+      location.reload();
+    }
+  });
+
+  /* keyboard: Ctrl/Cmd+S to save */
+  document.addEventListener("keydown", e=>{
+    if((e.ctrlKey||e.metaKey) && e.key.toLowerCase()==="s"){ e.preventDefault(); save(); }
+  });
+})();
+</script>
+</body>
+</html>
