@@ -333,6 +333,40 @@
     color:var(--foam); padding:0 .5rem; min-width:74px; text-align:center;
   }
 
+  .share-wrap{ position:relative; display:inline-flex; }
+  .share-menu{
+    position:absolute; bottom:calc(100% + .6rem); left:50%; transform:translateX(-50%);
+    background:rgba(11,35,43,.97); backdrop-filter:blur(8px);
+    border:1px solid rgba(132,185,168,.3); border-radius:14px;
+    padding:.4rem; width:232px;
+    box-shadow:0 18px 40px -16px rgba(0,0,0,.85);
+    display:flex; flex-direction:column; gap:.1rem;
+  }
+  .share-menu[hidden]{ display:none; }
+  .share-menu button{
+    width:100%; text-align:left; background:transparent; border:none;
+    color:var(--fog); font-family:"Outfit",sans-serif; font-size:.86rem;
+    font-weight:400; letter-spacing:0; text-transform:none;
+    padding:.6rem .7rem; border-radius:9px; cursor:pointer;
+  }
+  .share-menu button:hover{ background:rgba(132,185,168,.16); color:#fff; }
+  .share-hint{
+    margin:.4rem .2rem .1rem; padding-top:.5rem;
+    border-top:1px solid rgba(132,185,168,.18);
+    font-family:"Space Mono",monospace; font-size:.58rem; line-height:1.55;
+    color:var(--foam); letter-spacing:.01em; text-transform:none;
+  }
+  .toast{
+    position:fixed; bottom:5rem; left:50%; transform:translateX(-50%);
+    background:var(--coral); color:#fff; font-family:"Space Mono",monospace;
+    font-size:.74rem; letter-spacing:.03em; padding:.7rem 1.1rem; border-radius:30px;
+    box-shadow:0 14px 30px -10px rgba(0,0,0,.6); z-index:60;
+    opacity:0; transition:opacity .2s ease; pointer-events:none;
+    max-width:min(90vw,360px); text-align:center;
+  }
+  .toast[hidden]{ display:none; }
+  .toast.show{ opacity:1; }
+
   footer{
     text-align:center; padding:2rem 1rem 6rem;
     font-family:"Space Mono",monospace; font-size:.66rem;
@@ -413,7 +447,7 @@
     <div class="section-head">
       <span class="num">01</span>
       <h2>At a glance</h2>
-      <p>stuff and facts and shit, legit, just tap to edit this bihh dihhhh</p>
+      <p>the quick facts — tap any line to edit</p>
     </div>
     <div class="glance on-sand">
       <div class="stamp">
@@ -438,7 +472,7 @@
     <div class="section-head">
       <span class="num">02</span>
       <h2>The plan, day by day</h2>
-      <p>postcards you can fill in &amp; and babe, you could add in stuff if you'd like, my lover</p>
+      <p>postcards you can fill in &amp; reorder by editing</p>
     </div>
     <div class="days on-sand" id="days"><!-- day cards injected here --></div>
     <button class="add-day" id="addDay">+ add a day</button>
@@ -446,8 +480,8 @@
     <!-- ============ WISHLIST ============ -->
     <div class="section-head">
       <span class="num">03</span>
-      <h2>Things we want to hit (aside from each other)</h2>
-      <p>tap the box when you DONE DIDDIT</p>
+      <h2>Things we want to hit</h2>
+      <p>tap the box when you've done it</p>
     </div>
     <div class="wish-grid" id="wishGrid"><!-- wish columns injected --></div>
 
@@ -455,7 +489,7 @@
     <div class="section-head">
       <span class="num">04</span>
       <h2>Field notes</h2>
-      <p>anything else you don't wanna forget, BABE? we're pretty notorious for forgetting minor stuff</p>
+      <p>anything you don't want to forget</p>
     </div>
     <div class="notes-card on-sand">
       <div class="lbl">✶ scribbles, packing, reminders</div>
@@ -466,10 +500,21 @@
   <!-- ============ TOOLBAR ============ -->
   <div class="toolbar">
     <span class="status" id="status">saved</span>
-    <button id="saveBtn" class="primary">Save</button>
+    <button id="saveBtn">Save</button>
+    <div class="share-wrap">
+      <div class="share-menu" id="shareMenu" hidden>
+        <button id="copyLinkBtn">Copy share link</button>
+        <button id="saveFileBtn">Save a backup file</button>
+        <button id="openFileBtn">Open a saved file</button>
+        <p class="share-hint">Host it on GitHub Pages first — then the link opens the plan on her phone.</p>
+      </div>
+      <button id="shareBtn" class="primary">Share ▴</button>
+    </div>
     <button id="printBtn">Print</button>
     <button id="resetBtn">Reset</button>
+    <input type="file" id="fileInput" accept="application/json,.json" hidden />
   </div>
+  <div class="toast" id="toast" hidden></div>
 
   <footer>Made for the trip — keep it, host it, fill it in · <span>♡</span></footer>
 
@@ -615,34 +660,115 @@
   function flagSaving(){ statusEl.textContent = "saving…"; statusEl.style.color="#F2A63D"; }
   function flagSaved(){ statusEl.textContent = "saved ✓"; statusEl.style.color="#84B9A8"; }
 
+  /* ---------- payload ---------- */
+  function collectPayload(){
+    const p = { head:{}, days: daysEl.innerHTML, wish: wishGrid.innerHTML };
+    document.querySelectorAll("[data-key]").forEach(el=>{ p.head[el.dataset.key]=el.innerHTML; });
+    return p;
+  }
+  function applyPayload(p){
+    if(!p) return;
+    if(p.days!==undefined) daysEl.innerHTML = p.days;
+    if(p.wish!==undefined) wishGrid.innerHTML = p.wish;
+    if(p.head){
+      document.querySelectorAll("[data-key]").forEach(el=>{
+        if(p.head[el.dataset.key]!==undefined) el.innerHTML = p.head[el.dataset.key];
+      });
+    }
+    rebind();
+    refreshPlaceholders();
+  }
+
   function save(){
     flagSaving();
     clearTimeout(t);
     t = setTimeout(()=>{
-      const payload = {
-        head:{},
-        days: daysEl.innerHTML,
-        wish: wishGrid.innerHTML
-      };
-      document.querySelectorAll("[data-key]").forEach(el=>{ payload.head[el.dataset.key]=el.innerHTML; });
-      store.set(JSON.stringify(payload));
+      store.set(JSON.stringify(collectPayload()));
       flagSaved();
     }, 350);
   }
 
+  /* ---------- unicode-safe base64 (for share links) ---------- */
+  function b64encode(str){
+    const bytes = new TextEncoder().encode(str);
+    let bin = ""; bytes.forEach(b=> bin += String.fromCharCode(b));
+    return btoa(bin);
+  }
+  function b64decode(b64){
+    const bin = atob(b64);
+    const bytes = Uint8Array.from(bin, c=>c.charCodeAt(0));
+    return new TextDecoder().decode(bytes);
+  }
+
+  /* ---------- toast ---------- */
+  const toastEl = document.getElementById("toast");
+  let toastTimer;
+  function toast(msg){
+    toastEl.textContent = msg; toastEl.hidden = false;
+    requestAnimationFrame(()=> toastEl.classList.add("show"));
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(()=>{
+      toastEl.classList.remove("show");
+      setTimeout(()=>{ toastEl.hidden = true; }, 250);
+    }, 2800);
+  }
+
+  /* ---------- share link ---------- */
+  function buildLink(){
+    const code = encodeURIComponent(b64encode(JSON.stringify(collectPayload())));
+    return location.origin + location.pathname + "#plan=" + code;
+  }
+  function copyShareLink(){
+    const link = buildLink();
+    const done = ()=> toast(link.length > 8000
+      ? "Link copied — it's long, so the backup file may send better"
+      : "Link copied — paste it to her in a text");
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(link).then(done).catch(()=> fallbackCopy(link, done));
+    } else { fallbackCopy(link, done); }
+  }
+  function fallbackCopy(text, done){
+    const ta = document.createElement("textarea");
+    ta.value = text; ta.style.position="fixed"; ta.style.opacity="0";
+    document.body.appendChild(ta); ta.focus(); ta.select();
+    try{ document.execCommand("copy"); done(); }
+    catch(e){ prompt("Copy this link:", text); }
+    document.body.removeChild(ta);
+  }
+  function getHashPlan(){
+    const m = (location.hash||"").match(/[#&]plan=([^&]+)/);
+    if(!m) return null;
+    try{ return JSON.parse(b64decode(decodeURIComponent(m[1]))); }
+    catch(e){ return null; }
+  }
+
+  /* ---------- backup file ---------- */
+  function downloadFile(){
+    const blob = new Blob([JSON.stringify(collectPayload(), null, 2)], {type:"application/json"});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url; a.download = "our-trip-plan.json";
+    document.body.appendChild(a); a.click(); a.remove();
+    URL.revokeObjectURL(url);
+    toast("Backup file saved to your device");
+  }
+  const fileInput = document.getElementById("fileInput");
+  function openFile(){ fileInput.click(); }
+  fileInput.addEventListener("change", ()=>{
+    const f = fileInput.files[0]; if(!f) return;
+    const r = new FileReader();
+    r.onload = ()=>{
+      try{ applyPayload(JSON.parse(r.result)); save(); toast("Plan loaded from file"); }
+      catch(e){ toast("That file didn't look like a saved plan"); }
+    };
+    r.readAsText(f); fileInput.value = "";
+  });
+
   function load(){
-    let raw = store.get();
+    const raw = store.get();
     if(!raw){ return false; }
-    try{
-      const p = JSON.parse(raw);
-      if(p.days){ daysEl.innerHTML = p.days; }
-      if(p.wish){ wishGrid.innerHTML = p.wish; }
-      if(p.head){ document.querySelectorAll("[data-key]").forEach(el=>{
-        if(p.head[el.dataset.key]!==undefined) el.innerHTML = p.head[el.dataset.key];
-      }); }
-      rebind();
-      return true;
-    }catch(e){ return false; }
+    try{ applyPayload(JSON.parse(raw)); return true; }
+    catch(e){ return false; }
   }
 
   /* re-attach listeners after innerHTML restore */
@@ -675,7 +801,18 @@
   seedDays.forEach(addDay);
   seedWish.forEach(c=> wishGrid.appendChild(wishCol(c)));
 
-  const restored = load();
+  const incoming = getHashPlan();
+  if(incoming){
+    let go = true;
+    if(store.get()){
+      go = confirm("Open the shared plan? This replaces the plan currently saved on this device.");
+    }
+    if(go){ applyPayload(incoming); save(); }
+    else { load(); }
+    history.replaceState(null, "", location.pathname + location.search);
+  } else {
+    load();
+  }
   refreshPlaceholders();
   flagSaved();
 
@@ -687,19 +824,31 @@
     }
   });
 
+  /* share menu */
+  const shareMenu = document.getElementById("shareMenu");
+  const shareBtn = document.getElementById("shareBtn");
+  shareBtn.addEventListener("click", e=>{ e.stopPropagation(); shareMenu.hidden = !shareMenu.hidden; });
+  document.addEventListener("click", e=>{
+    if(!shareMenu.hidden && !shareMenu.contains(e.target) && e.target!==shareBtn){ shareMenu.hidden = true; }
+  });
+  document.getElementById("copyLinkBtn").addEventListener("click", ()=>{ copyShareLink(); shareMenu.hidden = true; });
+  document.getElementById("saveFileBtn").addEventListener("click", ()=>{ downloadFile(); shareMenu.hidden = true; });
+  document.getElementById("openFileBtn").addEventListener("click", ()=>{ openFile(); shareMenu.hidden = true; });
+
   /* toolbar */
-  document.getElementById("saveBtn").addEventListener("click", ()=>{ save(); });
+  document.getElementById("saveBtn").addEventListener("click", ()=>{ save(); toast("Saved on this device"); });
   document.getElementById("printBtn").addEventListener("click", ()=> window.print());
   document.getElementById("resetBtn").addEventListener("click", ()=>{
     if(confirm("Reset everything back to the starting plan? Your changes will be cleared.")){
       try{ localStorage.removeItem(KEY); }catch(e){ mem=null; }
+      location.hash = "";
       location.reload();
     }
   });
 
   /* keyboard: Ctrl/Cmd+S to save */
   document.addEventListener("keydown", e=>{
-    if((e.ctrlKey||e.metaKey) && e.key.toLowerCase()==="s"){ e.preventDefault(); save(); }
+    if((e.ctrlKey||e.metaKey) && e.key.toLowerCase()==="s"){ e.preventDefault(); save(); toast("Saved on this device"); }
   });
 })();
 </script>
